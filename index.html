@@ -1,243 +1,336 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>FIN</title>
-
 <link rel="manifest" href="manifest.json">
-
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+*{ margin:0; padding:0; box-sizing:border-box; }
 
 body{
-    background:#0f172a;
-    color:#ffffff;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    padding:20px;
+  background:#0f172a;
+  color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  padding:20px;
+  min-height:100vh;
 }
 
-.container{
-    max-width:600px;
-    margin:auto;
+.container{ max-width:600px; margin:auto; }
+
+/* 顶部 */
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  margin-bottom:24px;
+}
+.logo{ font-size:36px; font-weight:700; letter-spacing:-1px; }
+.streak{
+  background:#1e293b;
+  border-radius:14px;
+  padding:8px 14px;
+  font-size:14px;
+  color:#f59e0b;
 }
 
-.logo{
-    font-size:40px;
-    font-weight:700;
-    margin-bottom:8px;
+/* 仪表盘 */
+.dashboard{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:20px;
+}
+.dash-card{
+  background:#1e293b;
+  border-radius:20px;
+  padding:18px;
+}
+.dash-card.wide{
+  grid-column:1/-1;
+}
+.dash-label{
+  font-size:12px;
+  color:#64748b;
+  margin-bottom:6px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+.dash-value{
+  font-size:28px;
+  font-weight:700;
+}
+.dash-value.green{ color:#22c55e; }
+.dash-value.blue{ color:#3b82f6; }
+.dash-value.amber{ color:#f59e0b; }
+.dash-value.red{ color:#ef4444; }
+
+/* 进度条 */
+.progress-bar{
+  width:100%;
+  height:6px;
+  background:#334155;
+  border-radius:4px;
+  margin-top:10px;
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  border-radius:4px;
+  background:#3b82f6;
+  transition:width .4s ease;
 }
 
-.subtitle{
-    color:#94a3b8;
-    margin-bottom:30px;
-    font-size:16px;
+/* 题目区 */
+select{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:16px;
+  background:#1e293b;
+  color:white;
+  font-size:17px;
+  margin-bottom:14px;
+  appearance:none;
 }
+.nextBtn{
+  width:100%;
+  border:none;
+  border-radius:16px;
+  padding:18px;
+  font-size:19px;
+  font-weight:600;
+  background:#3b82f6;
+  color:white;
+  margin-bottom:16px;
+  cursor:pointer;
+}
+.nextBtn:active{ opacity:.85; }
 
 .card{
-    background:#1e293b;
-    border-radius:24px;
-    padding:25px;
-    margin-bottom:20px;
+  background:#1e293b;
+  border-radius:24px;
+  padding:24px;
+  margin-bottom:16px;
 }
-
-select{
-    width:100%;
-    padding:18px;
-    border:none;
-    border-radius:18px;
-    background:#334155;
-    color:white;
-    font-size:18px;
-    margin-bottom:20px;
-}
-
-.nextBtn{
-    width:100%;
-    border:none;
-    border-radius:18px;
-    padding:18px;
-    font-size:20px;
-    font-weight:600;
-    background:#3b82f6;
-    color:white;
-}
-
 #question{
-    font-size:26px;
-    line-height:1.6;
-    text-align:center;
+  font-size:22px;
+  line-height:1.65;
+  text-align:center;
+  color:#e2e8f0;
+  min-height:80px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .action{
-    width:100%;
-    border:none;
-    border-radius:18px;
-    padding:18px;
-    margin-top:15px;
-    font-size:18px;
-    font-weight:600;
-    color:white;
+  width:100%;
+  border:none;
+  border-radius:16px;
+  padding:16px;
+  margin-top:12px;
+  font-size:17px;
+  font-weight:600;
+  color:white;
+  cursor:pointer;
 }
-
-.done{
-    background:#22c55e;
-}
-
-.stuck{
-    background:#ef4444;
-}
-
-.unsure{
-    background:#f59e0b;
-}
+.action:active{ opacity:.85; }
+.done{ background:#22c55e; }
+.stuck{ background:#ef4444; }
+.unsure{ background:#f59e0b; }
 
 #feedback{
-    margin-top:25px;
-    line-height:1.7;
-    font-size:20px;
-    color:#cbd5e1;
+  margin-top:20px;
+  font-size:17px;
+  color:#94a3b8;
+  line-height:1.7;
+  min-height:28px;
 }
 
 .footer{
-    text-align:center;
-    margin-top:30px;
-    color:#64748b;
-    font-size:14px;
+  text-align:center;
+  margin-top:28px;
+  color:#334155;
+  font-size:13px;
 }
-
 </style>
 </head>
-
 <body>
-
 <div class="container">
 
-<div class="logo">FIN</div>
-<div class="subtitle">Finance Learning System</div>
+  <!-- 顶部 -->
+  <div class="top">
+    <div class="logo">FIN</div>
+    <div class="streak">🔥 连续 <span id="streakDays">0</span> 天</div>
+  </div>
 
-<select id="mode">
+  <!-- 仪表盘 -->
+  <div class="dashboard">
+    <div class="dash-card wide">
+      <div class="dash-label">今日进度</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="dash-value blue"><span id="doneCount">0</span> / <span id="totalCount">20</span> 题</div>
+        <div style="font-size:13px;color:#64748b"><span id="accuracy">--</span>% 正确率</div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-label">答对</div>
+      <div class="dash-value green" id="correctCount">0</div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-label">答错</div>
+      <div class="dash-value red" id="wrongCount">0</div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-label">XP</div>
+      <div class="dash-value amber" id="xpCount">0</div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-label">错题待复习</div>
+      <div class="dash-value" id="reviewCount">0</div>
+    </div>
+  </div>
+
+  <!-- 选题 + 下一题 -->
+  <select id="mode">
     <option value="npv">NPV / 投资决策</option>
     <option value="tv">时间价值</option>
     <option value="risk">风险收益</option>
     <option value="ratio">财务分析</option>
     <option value="wacc">资本结构</option>
-</select>
+  </select>
 
-<button class="nextBtn" onclick="nextQ()">
-🎯 下一题
-</button>
+  <button class="nextBtn" onclick="nextQ()">🎯 下一题</button>
 
-<div class="card">
-    <div id="question">
-        点击“下一题”开始学习
-    </div>
-</div>
+  <!-- 题目 -->
+  <div class="card">
+    <div id="question">点击"下一题"开始学习</div>
+  </div>
 
-<div class="card">
+  <!-- 操作 -->
+  <div class="card">
+    <button class="action done" onclick="answer('done')">✔ 我会做</button>
+    <button class="action stuck" onclick="answer('stuck')">❌ 卡住了</button>
+    <button class="action unsure" onclick="answer('unsure')">🤔 不确定</button>
+    <p id="feedback"></p>
+  </div>
 
-<button class="action done"
-onclick="answer('done')">
-✔ 我会做
-</button>
-
-<button class="action stuck"
-onclick="answer('stuck')">
-❌ 卡住了
-</button>
-
-<button class="action unsure"
-onclick="answer('unsure')">
-🤔 不确定
-</button>
-
-<p id="feedback"></p>
-
-</div>
-
-<div class="footer">
-FIN v1.0
-</div>
-
+  <div class="footer">FIN v2.0</div>
 </div>
 
 <script>
-
 const questions = {
-
-npv:[
-"项目初始投资1000，每年现金流300，5年，是否投资？",
-"两个项目A/B，NPV分别为200和150，选哪个？",
-"折现率10%，现金流逐年增长，如何判断NPV？"
-],
-
-tv:[
-"1000元，年利率10%，3年后终值？",
-"每年收到500元，折现率8%，求现值？",
-"永续年金每年1000元，折现率5%，现值？"
-],
-
-risk:[
-"β=1.2，市场收益10%，无风险3%，求预期收益？",
-"风险越高，收益如何变化？",
-"组合分散风险的原理是什么？"
-],
-
-ratio:[
-"计算ROA需要哪些数据？",
-"流动比率过低说明什么？",
-"杜邦分析如何分解ROE？"
-],
-
-wacc:[
-"债务60%，权益40%，如何计算WACC？",
-"税率变化对WACC有什么影响？",
-"为什么债务成本乘(1-T)？"
-]
-
+  npv:[
+    "项目初始投资1000，每年现金流300，5年，是否投资？",
+    "两个项目A/B，NPV分别为200和150，选哪个？",
+    "折现率10%，现金流逐年增长，如何判断NPV？"
+  ],
+  tv:[
+    "1000元，年利率10%，3年后终值？",
+    "每年收到500元，折现率8%，求现值？",
+    "永续年金每年1000元，折现率5%，现值？"
+  ],
+  risk:[
+    "β=1.2，市场收益10%，无风险3%，求预期收益？",
+    "风险越高，收益如何变化？",
+    "组合分散风险的原理是什么？"
+  ],
+  ratio:[
+    "计算ROA需要哪些数据？",
+    "流动比率过低说明什么？",
+    "杜邦分析如何分解ROE？"
+  ],
+  wacc:[
+    "债务60%，权益40%，如何计算WACC？",
+    "税率变化对WACC有什么影响？",
+    "为什么债务成本乘(1-T)？"
+  ]
 };
 
-let current="";
+// 本地存储数据
+let data = JSON.parse(localStorage.getItem("fin_data") || "{}");
+if(!data.correct) data = { correct:0, wrong:0, done:0, xp:0, streak:0, lastDate:"", review:0 };
+
+function saveData(){ localStorage.setItem("fin_data", JSON.stringify(data)); }
+
+// 检查连续天数
+function checkStreak(){
+  const today = new Date().toDateString();
+  if(data.lastDate !== today){
+    const yesterday = new Date(Date.now()-86400000).toDateString();
+    if(data.lastDate === yesterday){
+      data.streak++;
+    } else if(data.lastDate !== today){
+      data.streak = 1;
+    }
+    data.lastDate = today;
+    saveData();
+  }
+}
+
+function updateUI(){
+  document.getElementById("doneCount").textContent = data.done;
+  document.getElementById("correctCount").textContent = data.correct;
+  document.getElementById("wrongCount").textContent = data.wrong;
+  document.getElementById("xpCount").textContent = data.xp;
+  document.getElementById("reviewCount").textContent = data.review;
+  document.getElementById("streakDays").textContent = data.streak;
+  const pct = Math.min(100, Math.round(data.done/20*100));
+  document.getElementById("progressFill").style.width = pct + "%";
+  const acc = data.done > 0 ? Math.round(data.correct/data.done*100) : "--";
+  document.getElementById("accuracy").textContent = acc === "--" ? "--" : acc;
+}
+
+let current = "";
 
 function nextQ(){
-
-    let mode=document.getElementById("mode").value;
-
-    let qs=questions[mode];
-
-    current=qs[Math.floor(Math.random()*qs.length)];
-
-    document.getElementById("question").innerText=current;
-
-    document.getElementById("feedback").innerText="";
+  const mode = document.getElementById("mode").value;
+  const qs = questions[mode];
+  current = qs[Math.floor(Math.random()*qs.length)];
+  document.getElementById("question").textContent = current;
+  document.getElementById("feedback").textContent = "";
 }
 
 function answer(type){
-
-    let msg="";
-
-    if(type==="done")
-        msg="🎉 很好，继续保持！";
-
-    if(type==="stuck")
-        msg="💡 提示：先确定题型，再找对应公式。";
-
-    if(type==="unsure")
-        msg="📖 建议重新梳理概念，再回到题目。";
-
-    document.getElementById("feedback").innerText=msg;
+  if(!current) return;
+  let msg = "";
+  data.done++;
+  if(type === "done"){
+    msg = "🎉 很好，继续保持！";
+    data.correct++;
+    data.xp += 10;
+  }
+  if(type === "stuck"){
+    msg = "💡 先确定题型，再找对应公式。";
+    data.wrong++;
+    data.review++;
+    data.xp += 2;
+  }
+  if(type === "unsure"){
+    msg = "📖 建议重新梳理概念，再回到题目。";
+    data.wrong++;
+    data.review++;
+    data.xp += 5;
+  }
+  document.getElementById("feedback").textContent = msg;
+  saveData();
+  updateUI();
 }
+
+checkStreak();
+updateUI();
 
 if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("service-worker.js");
+  navigator.serviceWorker.register("service-worker.js");
 }
-
 </script>
-
 </body>
 </html>
